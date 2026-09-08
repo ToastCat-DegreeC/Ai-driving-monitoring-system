@@ -1,5 +1,5 @@
-# AI Driving Monitoring System (ADMS)
-### Multi-Modal Vision & Contactless Physiological Sensing with Explainable AI
+# A Robust Driver State Monitoring System Utilizing Attention-Based Multi-Modal Fusion
+### Contactless Physiological Sensing & Computer Vision with Explainable AI
 
 [![Python 3.9](https://img.shields.io/badge/Python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
@@ -215,7 +215,7 @@ If you use this repository, models, or research methodology in your academic wor
 ```bibtex
 @mastersthesis{chang2026drivermonitoring,
   author     = {Shan-Wei Chang},
-  title      = {Real-Time Driver State Monitoring: A Multi-Modal Fusion of Physiological rPPG and Behavioral Indicators using Attention-based Networks},
+  title      = {A Robust Driver State Monitoring System Utilizing Attention-Based Multi-Modal Fusion},
   school     = {Tatung University},
   department = {Department of Computer Science and Engineering},
   year       = {2026},
@@ -225,7 +225,7 @@ If you use this repository, models, or research methodology in your academic wor
 ```
 
 ### IEEE Format
-> S.-W. Chang, *"Real-Time Driver State Monitoring: A Multi-Modal Fusion of Physiological rPPG and Behavioral Indicators using Attention-based Networks,"* Master's thesis, Dept. of Computer Science & Engineering, Tatung University, Taipei, Taiwan, 2026.
+> S.-W. Chang, *"A Robust Driver State Monitoring System Utilizing Attention-Based Multi-Modal Fusion,"* Master's thesis, Dept. of Computer Science & Engineering, Tatung University, Taipei, Taiwan, 2026.
 
 ---
 
