@@ -200,7 +200,9 @@ Ai-driving-monitoring-system/
 
 * **Primary Researcher / Author**: Shan-Wei Chang (David Chen)
 * **Institution**: Tatung University (TTU), Department of Computer Science & Engineering
-* **Advising Professor**: Dr. Li Cho
+* **Advising Professors**: 
+  * Dr. Li Cho
+  * Dr. Hsu Chao-Yun
 * **Affiliation**: Academic-Industry Joint Research Initiative
 
 ---
