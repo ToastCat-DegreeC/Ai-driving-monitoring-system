@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Large raw datasets and videos (Totaling ~19 GB - GitHub blocks >100MB and caps repos)
+Data/
+data/
+drowsiness_dataset/
+camera setup/
+*.avi
+*.mp4
+*.mkv
+*.mov
+*.zip
+*.tar.gz
+*.7z
+*.npy
+
+# Runtime logs and session captures
+logs/
+scratch/
+
+# OS generated files
+Thumbs.db
+.DS_Store
+*.tmp

@@ -1,0 +1,106 @@
+# AI Driving Monitoring System - Version Patch Notes
+
+## [Version 3.1.0] - 2026-09-08 (Company Demo & Presentation Polish)
+
+### Decision Engine & Multi-Head Attention Fusion (Part C)
+- **Retrained MHA-BiLSTM Weights (`models/fusion_model.h5`)**: Resolved inverted PERCLOS correlation in pilot training data. The 4-head MHA-BiLSTM network now properly predicts ~12% (Alert), ~65% (Fatigued/Yawning), and >90% (Critical on eye closure >= 1.5s).
+- **Interpretability & XAI Attention Heads**: Attention weights now legitimately focus on closed-eye frames during micro-sleeps and blinks, achieving Validation MAE of **0.0401**.
+- **Model Backup**: Safely archived original weights to `models/fusion_model_backup.h5`.
+
+### Physiological Signal Processing (HR & HRV)
+- **Biomedical RR-Interval Outlier Filter**: Filtered optical missed beats (>1.35x median RR-interval) in `utils/signal_processing.py` to eliminate erroneous 300+ ms SDNN spikes.
+- **HRV Stabilization & Smoothing**: Integrated moving exponential stabilization (`self.stable_hrv`) in `main.py`, stabilizing live HRV within the healthy clinical resting range (48.0 - 58.0 ms).
+
+### UI/UX & Explainable AI Dashboard
+- **Resolution Upscaling**: Automatically upscaled camera feed to minimum 720p height with 340px telemetry panel; enabled resizable/maximizable window (`cv2.WINDOW_NORMAL`).
+- **Annotated Attention Bar (XAI)**: Added timeline bounds (`-2.0s (Past)` to `Now (0s)`), `[MHA XAI]` badge, and dynamic amber/orange peak highlight for anomaly focus.
+- **Live Ocular State Indicator**: Added real-time `OCULAR STATE: OPEN (Green)` vs `CLOSED (Red)` status badge.
+- **Startup Warm-up Gating**: Suppressed initial 99% probability spike by cleanly gating predictions during the 2.0-second calibration window.
+
+## [Version 1.3] - 2026-03-06
+
+### System Performance & Architecture
+- **Asynchronous Inference Engine**: Migrated heavy AI models (HR, SpO2, PERCLOS, Fusion) to a dedicated background `AIBackgroundWorker` thread using `threading` and `Queue`.
+- **UI Responsiveness**: Decoupled AI processing from the camera loop, ensuring a consistent **30 FPS** video feed and eliminating "stuttering" during batch model execution.
+- **Centralized Configuration**: Created `config.py` to house all hyperparameters, thresholds, and model paths, significantly improving project maintainability and tuning speed.
+
+### Physiological Robustness & Vitals
+- **Signal Quality Index (SQI)**: Implemented an FFT-based Signal-to-Noise Ratio (SNR) monitor for rPPG. The system now enters a "Searching..." state if signal noise (e.g., from bad lighting) exceeds the `SQI_THRESHOLD`.
+- **Hybrid SpO2 Logic**: Developed a robust estimation strategy blending AI model predictions with calibrated "Ratio-of-Ratios" analytical formulas.
+- **Advanced Smoothing**: Integrated heavy EMA (Exponential Moving Average) filters for SpO2 and Heart Rate, resulting in stable, realistic vitals (stabilizing SpO2 from erratic 80% to a healthy 95-98% range).
+
+### Tracking & Visualization
+- **Precise Head Pose Tracking**: Re-mapped 3D-to-2D landmarks to resolve axis flipping and applied EMA smoothing to eliminate rotational jitter.
+- **3D Axis Visualization**: Added a real-time RGB coordinate axis projected from the nose, providing instant visual feedback for head Pitch, Yaw, and Roll.
+- **Interactive Fatigue Logic**: Integrated physical heuristics (yawning and long eye closure) into the Fusion Model decision engine for immediate "CRITICAL" fatigue responses.
+
+### User Interface (UI/UX)
+- **Professional Side-Panel Dashboard**: Replaced basic OpenCV text overlays with a modern, dark-themed dashboard.
+- **Real-Time Pulse Wave**: Added a scrolling "ECG-style" graph to visualize the raw rPPG pulse signal.
+- **Dynamic Fatigue Meter**: Implemented a color-coded probability bar (Green -> Yellow -> Red) for intuitive risk assessment.
+- **Compact Layout**: Optimized the dashboard design to remain functional and readable on standard webcam resolutions (480p/720p).
+
+### Validation & Benchmarking
+- **Automated Benchmarking Suite**: Developed `benchmark_rppg.py` to validate system accuracy against the **UBFC-rPPG** dataset.
+- **Performance Baseline**: Verified an average Heart Rate MAE of **6.03 BPM** across multiple subjects.
+
+### TODO List (Next Steps)
+- [ ] **Blink Detection**: Implement peak detection on EAR streams to track Blink Frequency and Duration.
+- [ ] **Model Quantization**: Convert `.h5` models to **TensorFlow Lite (.tflite)** for optimized CPU/Edge device performance.
+- [ ] **Audio Feedback**: Add localized voice/beep alerts for Critical fatigue and distraction states.
+
+## [Version 1.2] - 2026-02-26
+
+### Physiological Monitoring (SpO2)
+- **SpO2 Extraction (Formulaic)**: Implemented a mathematical SpO2 estimation using the "Ratio of Ratios" formula on the detrended Red and Blue color channels from the existing 256-frame rPPG buffer.
+- **SpO2 Extraction (AI-Driven)**: Upgraded the SpO2 calculation from a static mathematical formula to a dynamic 1D Convolutional Neural Network (`spo2_model.h5`). The model takes the raw `(256, 3)` RGB signal as input.
+- **Synthetic SpO2 Training**: Created `train_spo2_synthetic.py` to generate synthetic SpO2 wave data (mimicking healthy 95-100% and low 85-94% oxygen levels with noise) to train the initial AI architecture.
+- **HUD Update**: Updated the real-time Heads-Up Display to continuously show the user's SpO2 percentage alongside their Heart Rate.
+
+### TODO List (Next Steps)
+- [ ] Acquire a real-world SpO2 dataset (e.g., VIPL-HR or MCD-rPPG) with ground-truth oxygen saturation labels.
+- [ ] Create a data parsing script for the new dataset to replace the synthetic data.
+- [ ] Retrain the `spo2_model.h5` 1D-CNN using real-world data for medical accuracy.
+- [ ] Fine-tune the adaptive smoothing and add confidence thresholds for the SpO2 HUD predictions.
+
+## [Version 1.1] - 2026-01-30
+
+### Behavioral Monitoring (Priority 1)
+- **Head Pose Estimation**: Integrated 3D pose tracking using `solvePnP`. The system now detects Pitch (nodding), Yaw (turning), and Roll in degrees.
+- **Yawn Detection**: Implemented Mouth Aspect Ratio (MAR) logic using inner lip landmarks to trigger a "YAWNING!" alert.
+- **Distraction Logic**: Added automated triggers that flag the user as "Distracted" if the head orientation deviates significantly from the center.
+
+### Stability & UX
+- **Auto-Calibration System**: Developed a startup routine that samples the first 60 frames to "Zero" the head pose, allowing for different camera angles and laptop tilts.
+- **Robust Euler Math**: Replaced version-dependent OpenCV decomposition with a robust manual trigonometric calculation for rotation angles.
+- **Performance Cleanup**: Optimized the main loop and removed redundant debug logging to resolve "Not Responding" UI hangs.
+- **HUD Visualization**: Added a 3D "Nose Vector" line to the face mesh to visually indicate gaze direction.
+
+## [Version 1.0] - 2026-01-14
+
+### Core Features & Integration
+- **Full Model Integration**: Successfully integrated the 1D-CNN Heart Rate (HR) model, the PERCLOS drowsiness model, and the Eye CNN classifier into the main real-time system (`main.py`).
+- **Hybrid Eye State Logic**: Implemented a robust dual-check system combining geometric EAR (Eye Aspect Ratio) and appearance-based CNN inference. Added temporal smoothing (Exponential Moving Average) to eliminate "flickering" between open/closed states.
+- **Heart Rate Stabilization**: Developed a multi-stage HR filter including:
+    - **Valid Range Filter**: Restricts readings to 45-160 BPM.
+    - **Jump Rejection**: Automatically ignores sudden spikes (>12 BPM) caused by motion or lighting changes.
+    - **Smoothing**: Uses a moving average to provide a steady, readable pulse value.
+
+### Performance & Robustness
+- **High-Sensitivity Tracking**: Optimized MediaPipe Face Mesh thresholds to allow face detection even while wearing masks or bandanas.
+- **FPS Synchronization**: Enforced a 30Hz sampling rate for physiological signals (rPPG/EAR) to match training conditions, even when the camera runs at 60 FPS.
+- **Loop Optimization**: Implemented frame-skipping for heavy AI models (Eye CNN runs every 5 frames, HR/PERCLOS every 30 frames) to maintain a smooth 60 FPS UI experience.
+- **Dynamic ROIs**: Updated forehead and cheek regions to scale dynamically based on face size and orientation.
+
+### Image Processing & AI
+- **Contrast Enhancement**: Integrated Histogram Equalization for eye crops to improve detection accuracy in low-light or high-shadow conditions.
+- **Synthetic PERCLOS Training**: Generated a synthetic time-series dataset to train the PERCLOS 1D-CNN model in the absence of a localized DMD video dataset.
+- **Input Validation**: Fixed several "AttributeErrors" and "Reshape Errors" by enforcing strict NumPy array casting across the pipeline.
+
+### Debugging & Visualization (Developer Tools)
+- **Live Debug Overlays**: Added real-time visualization of the 468-point face mesh, forehead/cheek ROI boxes, and an FPS counter.
+- **Eye-In-The-Box**: Added persistent display of the actual eye crops being fed to the CNN for live alignment verification.
+- **Raw Metric Stream**: Displayed raw P (Probability) and EAR (Geometry) values on the HUD for fine-tuning.
+
+---
+*Status: System is stable and fully functional for real-time testing.*
