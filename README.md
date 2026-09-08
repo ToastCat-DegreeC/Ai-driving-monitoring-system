@@ -207,6 +207,28 @@ Ai-driving-monitoring-system/
 
 ---
 
+## 📖 Citation
+
+If you use this repository, models, or research methodology in your academic work, projects, or publications, please cite this work:
+
+### BibTeX
+```bibtex
+@mastersthesis{chang2026drivermonitoring,
+  author     = {Shan-Wei Chang},
+  title      = {Real-Time Driver State Monitoring: A Multi-Modal Fusion of Physiological rPPG and Behavioral Indicators using Attention-based Networks},
+  school     = {Tatung University},
+  department = {Department of Computer Science and Engineering},
+  year       = {2026},
+  address    = {Taipei, Taiwan},
+  note       = {Advised by Dr. Li Cho and Dr. Hsu Chao-Yun}
+}
+```
+
+### IEEE Format
+> S.-W. Chang, *"Real-Time Driver State Monitoring: A Multi-Modal Fusion of Physiological rPPG and Behavioral Indicators using Attention-based Networks,"* Master's thesis, Dept. of Computer Science & Engineering, Tatung University, Taipei, Taiwan, 2026.
+
+---
+
 ## 📄 License
 
 This project is licensed for academic research, education, and company demonstration purposes. See repository headers for detailed collaboration terms.
