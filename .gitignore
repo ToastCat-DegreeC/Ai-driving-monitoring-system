@@ -9,7 +9,7 @@ venv/
 .venv/
 env/
 
-# Large raw datasets and videos (Totaling ~19 GB - GitHub blocks >100MB and caps repos)
+# Large raw datasets and videos
 Data/
 data/
 drowsiness_dataset/
@@ -31,3 +31,24 @@ scratch/
 Thumbs.db
 .DS_Store
 *.tmp
+
+# Academic / Thesis / Publication Documents & Drafts (Keep private locally)
+THESIS_DRAFT.md
+GEMINI.md
+FACT_SKELETON.md
+DEFENSE_STRATEGY.md
+PUBLICATION/
+research-ai driver monitoring system/
+*.docx
+*.pdf
+*.pptx
+
+# Benchmarks, local notes & error logs
+benchmark_*.csv
+benchmark_results.csv
+pilot_error.txt
+gemini staring cmd.txt
+version_patchnote.txt
+0.19
+*.log
+models/*_backup.h5
